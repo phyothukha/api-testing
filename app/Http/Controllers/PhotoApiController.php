@@ -29,12 +29,16 @@ class PhotoApiController extends Controller
 
         foreach ($request->file('photos') as $key=>$photo) {
 
-            $newName= $photo->store("public");
+            $newName= $photo->store();
+
+
             Photo::create([
                 'product_id'=>$request->product_id,
                 'name'=>$newName
             ]);
         }
+
+//        return $photo
         return response()->json(['message'=>'photo created successfully'],201);
     }
 

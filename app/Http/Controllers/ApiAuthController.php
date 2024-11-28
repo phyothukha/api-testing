@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,8 +12,6 @@ class ApiAuthController extends Controller
 {
     public  function register(Request $request)
     {
-
-
         $request->validate([
             "name"=>"required|min:3",
             "email"=>"required|email|unique:users",
@@ -28,12 +26,12 @@ class ApiAuthController extends Controller
 
         if(Auth::attempt($request->only('email','password'))){
             $token=Auth::user()->createToken("phone")->plainTextToken;
-            return  response()->json($token);
+            return  response()->json([
+                "token"=>$token,
+                'message'=>new UserResource(Auth::user())
+            ]);
         }
-
-
         return response()->json(['message'=>'user not found'],403);
-
     }
 
     public function login(Request $request){
@@ -45,7 +43,10 @@ class ApiAuthController extends Controller
 
         if(Auth::attempt($request->only('email','password'))){
             $token=Auth::user()->createToken("phone")->plainTextToken;
-            return  response()->json($token);
+            return  response()->json([
+                "token"=>$token,
+                'message'=>new UserResource(Auth::user())
+            ]);
         }
         return response()->json(['message'=>'user not found'],401);
 

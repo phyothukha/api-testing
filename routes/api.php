@@ -3,23 +3,29 @@
 use App\Http\Controllers\ProductApiController;
 use App\Http\Controllers\PhotoApiController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\ControlProduct;
 use App\Http\Controllers\ApiAuthController;
 
 
+Route::prefix('v1')->group(function (){
 
-Route::post('/register',[ApiAuthController::class,"register"])->name("api.register");
-Route::post('/login',[ApiAuthController::class,"login"])->name("api.login");
+    Route::post('/register',[ApiAuthController::class,"register"])->name("api.register");
 
-Route::middleware(["auth:sanctum"])->group(function(){
+    Route::post('/login',[ApiAuthController::class,"login"])->name("api.login");
 
-    Route::post('/logout',[ApiAuthController::class,"logout"])->name("api.logout");
-    Route::post('/logout-all',[ApiAuthController::class,"logoutAll"])->name("api.logoutAll");
+    Route::middleware(["auth:sanctum"])->group(function(){
 
-    Route::get("/tokens",[ApiAuthController::class,"tokens"])->name("api.tokens");
+        Route::post('/logout',[ApiAuthController::class,"logout"])->name("api.logout");
 
-    Route::apiResource('products', ProductApiController::class);
-    Route::apiResource('photos', PhotoApiController::class);
+        Route::post('/logout-all',[ApiAuthController::class,"logoutAll"])->name("api.logoutAll");
+
+        Route::get("/tokens",[ApiAuthController::class,"tokens"])->name("api.tokens");
+
+        Route::apiResource('products', ProductApiController::class);
+
+        Route::apiResource('photos', PhotoApiController::class);
+
+    });
+
 });
 
 

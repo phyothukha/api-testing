@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\ControlProduct;
+use App\Http\Middleware\ResponseToJson;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,6 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
 //        $middleware->appendToGroup('productControl',[
 //            ControlProduct::class
 //        ]);
+
+        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
+        $middleware->use(
+            [ResponseToJson::class]
+        );
+
+
         $middleware->alias([
             'subscribed' => ControlProduct::class
         ]);

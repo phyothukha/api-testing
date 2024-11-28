@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductResource;
 use App\Models\Photo;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -17,7 +18,8 @@ class ProductApiController extends Controller
         $paginate = Product::latest('id')
             ->paginate(10);
         $products = $paginate;
-        return response()->json($products);
+
+        return ProductResource::collection($products);
     }
 
 
@@ -43,11 +45,14 @@ class ProductApiController extends Controller
 
         $photos=[];
         foreach ($request->file('photos') as $key=>$photo) {
-            $newName= $photo->store('public');
+            $newName= $photo->store();
             $photos[$key]= new Photo(['name'=>$newName]);
         }
         $product->photos()->saveMany($photos);
-        return response()->json($product);
+        return response()->json([
+            "message"=>"success",
+            "data"=>new ProductResource($product),
+        ]);
     }
 
     /**
@@ -55,11 +60,11 @@ class ProductApiController extends Controller
      */
     public function show(string $id)
     {
-        $products= Product::find($id);
-        if(is_null($products)){
+        $product= Product::find($id);
+        if(is_null($product)){
             return response()->json(['message'=>'product is not found'],404);
         }
-        return $products;
+        return  new ProductResource($product);
     }
 
     /**
