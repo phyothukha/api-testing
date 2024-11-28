@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductApiController extends Controller
 {
@@ -13,12 +14,10 @@ class ProductApiController extends Controller
      */
     public function index()
     {
-
-        $products = Product::latest('id')
+        $paginate = Product::latest('id')
             ->paginate(10);
-
+        $products = $paginate;
         return response()->json($products);
-
     }
 
 
@@ -38,18 +37,16 @@ class ProductApiController extends Controller
         $product= Product::create([
             "name"=>$request->name,
             'price'=>$request->price,
-            'stock'=>$request->stock
-        ]);
+            'stock'=>$request->stock,
+            "user_id"=>Auth::id()
+            ]);
 
-        $photos=[]
-        foreach ($product->photos as $key=>$photo) {
+        $photos=[];
+        foreach ($request->file('photos') as $key=>$photo) {
             $newName= $photo->store('public');
             $photos[$key]= new Photo(['name'=>$newName]);
         }
-
         $product->photos()->saveMany($photos);
-
-
         return response()->json($product);
     }
 
@@ -94,7 +91,6 @@ class ProductApiController extends Controller
         }
 
         $product->update();
-
         return response()->json($product);
     }
 
