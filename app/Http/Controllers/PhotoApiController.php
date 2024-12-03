@@ -12,7 +12,7 @@ class PhotoApiController extends Controller
      */
     public function index()
     {
-        $photos= Photo::latest('id')->paginate(10);
+        $photos = Photo::latest('id')->paginate(10);
         return response($photos);
     }
 
@@ -21,25 +21,25 @@ class PhotoApiController extends Controller
      */
     public function store(Request $request)
     {
-        $request-> validate([
-            "product_id"=>"required|exists:products,id",
-            "photos"=>'required',
-            'photos.*'=>'file|mimes:jpeg,png,jpg|max:512'
+        $request->validate([
+            "product_id" => "required|exists:products,id",
+            "photos" => 'required',
+            'photos.*' => 'file|mimes:jpeg,png,jpg|max:512'
         ]);
 
-        foreach ($request->file('photos') as $key=>$photo) {
+        foreach ($request->file('photos') as $key => $photo) {
 
-            $newName= $photo->store();
+            $newName = $photo->store();
 
 
             Photo::create([
-                'product_id'=>$request->product_id,
-                'name'=>$newName
+                'product_id' => $request->product_id,
+                'name' => $newName
             ]);
         }
 
-//        return $photo
-        return response()->json(['message'=>'photo created successfully'],201);
+        //        return $photo
+        return response()->json(['message' => 'photo created successfully'], 201);
     }
 
     /**
@@ -63,13 +63,12 @@ class PhotoApiController extends Controller
      */
     public function destroy(string $id)
     {
-        $photo= Photo::find($id);
-        if(is_null($photo)){
-            return response()->json(['message'=>'photo not found'],404);
+        $photo = Photo::find($id);
+        if (is_null($photo)) {
+            return response()->json(['message' => 'photo not found'], 404);
         }
 
         $photo->delete();
-        return response()->json([],204);
-
+        return response()->json([], 204);
     }
 }
