@@ -18,7 +18,6 @@ class ProductApiController extends Controller
         $paginate = Product::latest('id')
             ->paginate(10);
         $products = $paginate;
-
         return ProductResource::collection($products);
     }
 
@@ -28,6 +27,9 @@ class ProductApiController extends Controller
      */
     public function store(Request $request)
     {
+
+        // sleep(2);
+        return $request;
 
         $request->validate([
             "name" => "required|min:3|max:50",
@@ -50,7 +52,7 @@ class ProductApiController extends Controller
             $photos[$key] = new Photo(['name' => $newName]);
         }
         $product->photos()->saveMany($photos);
-        
+
         return response()->json([
             "message" => "product create successfully!",
             "success" => true,
@@ -64,17 +66,17 @@ class ProductApiController extends Controller
     public function show(string $id)
     {
         $product = Product::find($id);
-        if (is_null($product)) {
-            return response()->json(['message' => 'product is not found'], 404);
-        }
+
         return  new ProductResource($product);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
+
+        return $request;
         $request->validate([
             "name" => "nullable|min:3|max:50",
             "price" => "nullable|numeric|min:1",

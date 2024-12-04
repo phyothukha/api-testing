@@ -30,8 +30,6 @@ class PhotoApiController extends Controller
         foreach ($request->file('photos') as $key => $photo) {
 
             $newName = $photo->store();
-
-
             Photo::create([
                 'product_id' => $request->product_id,
                 'name' => $newName
