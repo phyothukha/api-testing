@@ -16,7 +16,7 @@ class ProductApiController extends Controller
     public function index()
     {
         $paginate = Product::latest('id')
-            ->paginate(10);
+            ->paginate(10)->onEachSide(1);
         $products = $paginate;
         return ProductResource::collection($products);
     }
@@ -81,7 +81,6 @@ class ProductApiController extends Controller
             "name" => "nullable|min:3|max:50",
             "price" => "nullable|numeric|min:1",
             "stock" => "nullable|numeric|min:1",
-
         ]);
 
         $product = Product::find($id);
@@ -115,6 +114,6 @@ class ProductApiController extends Controller
         }
 
         $products->delete();
-        return response()->json(['message' => 'product is deleted'], 204);
+        return response()->json(['message' => 'product is deleted']);
     }
 }

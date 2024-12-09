@@ -39,7 +39,7 @@ class ApiAuthController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'))) {
             // $token = Auth::user()->createToken("phone")->plainTextToken;
-            $token = Auth::user()->createToken("phone")->plainTextToken;
+            $token = $request->user()->createToken("phone")->plainTextToken;
             return  response()->json([
                 'message' => 'Login successfully',
                 'success' => true,
@@ -49,11 +49,10 @@ class ApiAuthController extends Controller
         }
         return response()->json(['message' => 'user not found', 'success' => false], 401);
     }
-    public  function logout()
+    public  function logout(Request $request)
     {
 
-        Auth::user()->currentAccessToken()->delete();
-        //        return response()->json(['message'=>'logout success'],204);
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'logout successfully',
