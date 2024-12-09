@@ -73,10 +73,9 @@ class ProductApiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, string $id)
     {
 
-        return $request;
         $request->validate([
             "name" => "nullable|min:3|max:50",
             "price" => "nullable|numeric|min:1",
@@ -100,7 +99,11 @@ class ProductApiController extends Controller
         }
 
         $product->update();
-        return response()->json($product);
+        return response()->json([
+            "message" => "product update successfully!",
+            "success" => true,
+            "data" => new ProductResource($product),
+        ]);
     }
 
     /**
