@@ -15,8 +15,11 @@ class ProductApiController extends Controller
      */
     public function index()
     {
-        $paginate = Product::latest('id')
-            ->paginate(10)->onEachSide(1);
+        $paginate = Product::when(request('keyword'), fn($q) => $q->where("name", "like", "%" . request('keyword') . "%"))
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString()
+            ->onEachSide(1);
         $products = $paginate;
         return ProductResource::collection($products);
     }
@@ -28,8 +31,6 @@ class ProductApiController extends Controller
     public function store(Request $request)
     {
 
-        // sleep(2);
-        return $request;
 
         $request->validate([
             "name" => "required|min:3|max:50",
@@ -86,7 +87,6 @@ class ProductApiController extends Controller
         if (is_null($product)) {
             return  response()->json(['message' => 'product is not found'], 404);
         }
-
 
         if ($request->has('name')) {
             $product->name = $request->name;
